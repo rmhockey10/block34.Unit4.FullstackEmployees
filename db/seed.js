@@ -1,20 +1,5 @@
-import dotenv from 'dotenv'
-dotenv.config();
-
 import db from "#db/client";
-import { createEmployee } from "./queries/employees.js"
-
-// const createTables = () => {
-//   db.query(`
-//     DROP TABLE IF EXISTS employees;
-//     CREATE TABLE employees (
-//       id SERIAL PRIMARY KEY,
-//       name VARCHAR(60),
-//       birthday DATE DEFAULT NOW(),
-//       salary INTEGER
-//   );
-//     `)
-// }
+import { createEmployee } from "./queries/employees.js";
 
 async function seedEmployees() {
   // TODO
@@ -71,10 +56,9 @@ async function seedEmployees() {
     },
   ];
 
-  // await createEmployee(people);
   for (let i = 0; i < employees.length; i++) {
     const employee = employees[i];
-    console.log(employee)
+    console.log(employee);
     await createEmployee(employee);
   }
 }
@@ -84,5 +68,3 @@ await db.connect();
 await seedEmployees();
 await db.end();
 console.log("🌱 Database seeded.");
-
-
