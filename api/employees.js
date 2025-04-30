@@ -13,36 +13,72 @@ export default router;
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(typeof id);
-  const idNUM = Number(id);
-  console.log(idNUM);
-  console.log(typeof idNUM);
-  if (idNUM < 0) return res.status(400);
-  if (!idNUM) return res.status(404);
 
-  const employee = getEmployee(idNUM);
+  // Use this regex to test if `id` string is a positive integer
+  // There are other ways to test, such as `isNaN`, but regex is commonly used when testing strings
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).send("Invalid request parameter");
+  }
+
+  const employee = await getEmployee(id); // Need to await the result of getEmployee since its async
+
+  // Check if the database returned a value after the delete action
+  // If the value is undefined, there was no row in the table with the provided id
+  if (!employee) {
+    return res.status(404).send("Resource not found");
+  }
+
   res.send(employee);
 });
 
 router.delete("/:id", async (req, res) => {
-  if (req.body.id < 0) return res.status(400);
-  if (!req.body.id) return res.status(404);
-  await deleteEmployee(req.employee.id);
+  // We want to grab the user id from the route param, not the body.  The body will unlikley contain information used to delete.
+  const { id } = req.params;
+
+  // Use this regex to test if `id` string is a positive integer
+  // There are other ways to test, such as `isNaN`, but regex is commonly used when testing strings
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).send("Invalid request parameter");
+  }
+
+  const employee = await deleteEmployee(id);
+
+  if (!employee) {
+    return res.status(404).send("Resource not found");
+  }
+
   res.sendStatus(204);
 });
 router.put("/:id", async (req, res) => {
+  // We want to grab the user id from the route param, not the body
+  const { id } = req.params;
+
+  // Use this regex to test if `id` string is a positive integer
+  // There are other ways to test, such as `isNaN`, but regex is commonly used when testing strings
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).send("Invalid request parameter");
+  }
+
   if (!req.body) return res.status(400).send("Request must have a body.");
+
   const { name, birthday, salary } = req.body;
+
   if (!name || !birthday || !salary)
     return res.status(400).send("Missing required info");
-  if (!req.body.id) return res.status(404);
 
   const employee = await updateEmployee({
-    id: req.movie.id,
+    id,
     name,
-    releaseDate,
-    runningTime,
+    birthday,
+    salary,
   });
+
+  // Check if the database returned a value after the delete action
+  // If the value is undefined, there was no row in the table with the provided id
+  if (!employee) {
+    return res.status(404).send("Resource not found");
+  }
+
   res.send(employee);
 });
 

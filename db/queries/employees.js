@@ -3,6 +3,7 @@ import db from "#db/client";
 /** @returns the employee created according to the provided details */
 export async function createEmployee({ name, birthday, salary }) {
   // TODO
+
   const text = `
   INSERT INTO employees
     (name, birthday, salary)
@@ -32,7 +33,7 @@ export async function getEmployees() {
  */
 export async function getEmployee(id) {
   // TODO
-  if (!id) return undefined;
+
   const sql = `SELECT * from employees WHERE id = $1`;
   const {
     rows: [employee],
@@ -46,8 +47,8 @@ export async function getEmployee(id) {
  */
 export async function updateEmployee({ id, name, birthday, salary }) {
   // TODO
-  if (!id) return undefined;
-  const sql = `UPDATE employee
+
+  const sql = `UPDATE employees
   SET
   name = $2, birthday = $3, salary = $4
   WHERE ID = $1
@@ -64,7 +65,7 @@ export async function updateEmployee({ id, name, birthday, salary }) {
  */
 export async function deleteEmployee(id) {
   // TODO
-  if (!id) return undefined;
+
   const sql = `DELETE from employees
   WHERE id = $1
   RETURNING *`;
